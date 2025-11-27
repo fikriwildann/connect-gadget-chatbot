@@ -1,0 +1,129 @@
+import streamlit as st
+import google.generativeai as genai
+
+# ================================
+# 1. API KEY GEMINI
+# ================================
+genai.configure(api_key="AIzaSyDZdW93m_ryNuT468s0rWs_fB5yhlBHKLs")
+
+# ================================
+# 2. MODEL
+# ================================
+model = genai.GenerativeModel("gemini-2.5-flash")
+
+# ===========================
+# STYLE CUSTOM (iMessage)
+# ===========================
+st.markdown("""
+<style>
+
+body {
+    background-color: #ffffff;
+}
+
+.chat-container {
+    max-width: 600px;
+    margin: auto;
+}
+
+.user-bubble {
+    background-color: #007AFF;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 18px;
+    margin: 8px;
+    max-width: 80%;
+    text-align: right;
+    margin-left: auto;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.bot-bubble {
+    background-color: #E5E5EA;
+    color: black;
+    padding: 12px 16px;
+    border-radius: 18px;
+    margin: 8px;
+    max-width: 80%;
+    text-align: left;
+    margin-right: auto;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+</style>
+""", unsafe_allow_html=True)
+
+# ================================
+# 3. LOAD STORE INFO DARI FILE TXT
+# ================================
+with open("store_info.txt", "r", encoding="utf-8") as f:
+    STORE_INFO = f.read()
+
+# ================================
+# 4. FUNGSI CHAT
+# ================================
+def ask_gemini(user_message):
+    prompt = f"""
+Kamu adalah chatbot resmi toko CONNECT.GADGET.
+
+Gunakan informasi toko berikut untuk menjawab semua pertanyaan:
+{STORE_INFO}
+
+Tugas kamu:
+- Jawab dengan bahasa Indonesia yang ramah dan lengkap.
+- Informasikan harga, stok, warna, varian, diskon, dan detail produk jika diminta.
+- Jika ditanya rekomendasi, berikan jawaban yang membantu.
+- Jika diminta alamat, jam buka, gunakan data di atas.
+- Jika produk tidak ada di daftar, jawab bahwa produk tersebut tidak tersedia.
+- Jangan gunakan tanda bintang (*), bold (** **)
+- Jangan gunakan format Markdown.
+
+Pertanyaan pengguna:
+{user_message}
+"""
+
+    response = model.generate_content(prompt)
+    return response.text
+
+# ===========================
+# HISTORY CHAT
+# ===========================
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+
+# ===========================
+# HEADER
+# ===========================
+st.title("📱 CONNECT.GADGET Chatbot")
+st.write("Halo! Saya siap bantu cari iPhone, iPad, atau MacBook 😊")
+
+st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+
+# ===========================
+# TAMPILKAN CHAT HISTORY
+# ===========================
+for chat in st.session_state.chat_history:
+    if chat["role"] == "user":
+        st.markdown(f"<div class='user-bubble'>{chat['msg']}</div>", unsafe_allow_html=True)
+    else:
+        st.markdown(f"<div class='bot-bubble'>{chat['msg']}</div>", unsafe_allow_html=True)
+
+# ===========================
+# INPUT BOX BAWAH (seperti iMessage)
+# ===========================
+user_input = st.chat_input("Ketik pesan...")
+
+if user_input:
+    # Simpan pesan user
+    st.session_state.chat_history.append({"role": "user", "msg": user_input})
+
+    # Balasan chatbot
+    reply = ask_gemini(user_input)
+    st.session_state.chat_history.append({"role": "bot", "msg": reply})
+
+    st.rerun()
+
+st.markdown("</div>", unsafe_allow_html=True)
