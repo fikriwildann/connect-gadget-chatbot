@@ -34,7 +34,7 @@ body {
     margin: 8px;
     max-width: 80%;
     text-align: right;
-    margin-right: auto;
+    margin-left: auto;
     font-size: 16px;
     line-height: 1.4;
 }
