@@ -3,7 +3,7 @@ import google.generativeai as genai
 
 # ================================
 # 1. API KEY GEMINI
-# ================================
+# ===============================
 genai.configure(api_key=st.secrets["API_KEY"])
 
 # ================================
@@ -33,6 +33,7 @@ body {
     border-radius: 18px;
     margin: 8px;
     max-width: 80%;
+    width: fit-content;
     text-align: right;
     margin-left: auto;
     font-size: 16px;
@@ -46,6 +47,7 @@ body {
     border-radius: 18px;
     margin: 8px;
     max-width: 80%;
+    width: fit-content;
     text-align: left;
     margin-right: auto;
     font-size: 16px;
