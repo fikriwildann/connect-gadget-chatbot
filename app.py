@@ -1,6 +1,8 @@
 import streamlit as st
 import google.generativeai as genai
 
+st.set_page_config(page_title=" CONNECT.GADGET Chatbot", page_icon="📱")
+
 # ================================
 # 1. API KEY GEMINI
 # ===============================
@@ -117,6 +119,8 @@ if col2.button("💻 MacBook"):
 if col3.button("📍 Alamat Toko"):
     st.session_state.quick_msg = "Alamat toko CONNECT.GADGET di mana?"
 
+st.markdown("<div class='chat-container'>", unsafe_allow_html=True)
+
 # ===========================
 # TAMPILKAN CHAT HISTORY
 # ===========================
@@ -150,3 +154,5 @@ if user_input:
     st.session_state.chat_history.append({"role": "bot", "msg": reply})
 
     st.rerun()
+
+st.markdown("</div>", unsafe_allow_html=True)
